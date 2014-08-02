@@ -69,6 +69,12 @@ module.exports = {
 };
 ```
 
+Start hearbeating,
+
+```bash
+$ node app.js
+```
+
 ## API
 
 TBD. 
