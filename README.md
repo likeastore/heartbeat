@@ -67,7 +67,7 @@ module.exports = {
 };
 ```
 
-Start hearbeating,
+Start heart beating,
 
 ```bash
 $ node app.js
@@ -77,7 +77,7 @@ $ node app.js
 
 TBD. 
 
-## Licence (MIT)
+## License (MIT)
 
 Copyright (c) 2014, Likeastore.com info@likeastore.com
 
