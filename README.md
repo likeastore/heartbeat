@@ -39,7 +39,7 @@ module.exports = {
 				version: "0.0.51",
 				apiUrl: "/api"
 			}
-		}
+		},
 
 		// databases
 		db: {
@@ -52,7 +52,7 @@ module.exports = {
 				}
 			}
 		}
-	}
+	},
 
 	// notification options
 	notify: {
