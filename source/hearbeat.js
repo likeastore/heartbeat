@@ -1,6 +1,6 @@
 var async = require('async');
 var request = require('request');
-var mongojs = require('mongojs');
+var mongo = require('mongojs');
 
 function heart(type, options) {
 	var beats = {
@@ -43,7 +43,20 @@ function heart(type, options) {
 
 		// execute query and measure reponse time
 		mongo: function (options, callback) {
-			throw 'not implemented';
+			var connection = options.connection, started = new Date();
+			var db = mongo.connect(connection, options.collections);
+			if (!db) {
+				return callback({message: 'failed to connect db', connection: options.connection});
+			}
+
+			options.query(db, function (err) {
+				if (err) {
+					return callback({message: 'db failed', connection: connection, err: err});
+				}
+
+				db.close();
+				callback(null, {connection: connection, responseTime: new Date() - started});
+			});
 		}
 	};
 
