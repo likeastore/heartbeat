@@ -1,13 +1,12 @@
 var async = require('async');
 var request = require('request');
+var mongojs = require('mongojs');
 
 function heart(type, options) {
 	var beats = {
 		// pings URL and measure the response time
 		ping: function (options, callback) {
-			var url = options.url;
-
-			var started = new Date();
+			var url = options.url, started = new Date();
 			request({url: options.url}, function (err, resp, body) {
 				if (err) {
 					return callback({message: 'ping failed', url: url, err: err});
@@ -17,15 +16,29 @@ function heart(type, options) {
 					return callback({message: 'ping failed', url: url, statusCode: resp.statusCode});
 				}
 
-				var responseTime = new Date() - started;
-
-				callback(null, {url: url, responseTime: responseTime, statusCode: resp.statusCode});
+				callback(null, {url: url, responseTime: new Date() - started, statusCode: resp.statusCode});
 			});
 		},
 
 		// requests URL and compare jsons
 		json: function (options, callback) {
-			throw 'not implemented';
+			var url = options.url, started = new Date(), expected = options.response;
+			request({url: options.url, json: true}, function (err, resp, body) {
+				if (err) {
+					return callback({message: 'json failed', url: url, err: err});
+				}
+
+				if (resp.statusCode !== 200) {
+					return callback({message: 'json failed', url: url, statusCode: resp.statusCode});
+				}
+
+				// TODO: use deep equal here.. underscore?
+				if (body !== expected) {
+					return callback({message: 'json failed', url: url, expected: expected, actual: body});
+				}
+
+				callback(null, {url: url, responseTime: new Date() - started, statusCode: resp.statusCode});
+			});
 		},
 
 		// execute query and measure reponse time
