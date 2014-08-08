@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var async = require('async');
 var request = require('request');
 var mongo = require('mongojs');
@@ -41,8 +42,7 @@ var beats = {
 				return callback({message: 'json failed', url: url, statusCode: resp.statusCode});
 			}
 
-			// TODO: use deep equal here.. underscore?
-			if (body !== expected) {
+			if (!_.isEqual(body, expected)) {
 				return callback({message: 'json failed', url: url, expected: expected, actual: body});
 			}
 
