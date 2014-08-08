@@ -126,9 +126,7 @@ function hearbeat(config) {
 	});
 
 	return {
-		start: function (callback) {
-			callback = callback || function () {};
-
+		start: function () {
 			// heartbeating cycle..
 			(function cycle() {
 				async.series(jobs, function (err) {
