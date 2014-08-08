@@ -6,6 +6,9 @@ var beats = {
 	// pings URL and measure the response time
 	ping: function (options, callback) {
 		var url = options.url, started = new Date();
+
+		console.log('ping', url);
+
 		request({url: options.url}, function (err, resp, body) {
 			if (err) {
 				return callback({message: 'ping failed', url: url, err: err});
@@ -15,13 +18,19 @@ var beats = {
 				return callback({message: 'ping failed', url: url, statusCode: resp.statusCode});
 			}
 
-			callback(null, {url: url, responseTime: new Date() - started, statusCode: resp.statusCode});
+			var report = {url: url, responseTime: new Date() - started, statusCode: resp.statusCode};
+			console.log(report);
+
+			callback(null, report);
 		});
 	},
 
 	// requests URL and compare jsons
 	json: function (options, callback) {
 		var url = options.url, started = new Date(), expected = options.response;
+
+		console.log('json', url);
+
 		request({url: options.url, json: true}, function (err, resp, body) {
 			if (err) {
 				return callback({message: 'json failed', url: url, err: err});
@@ -36,7 +45,10 @@ var beats = {
 				return callback({message: 'json failed', url: url, expected: expected, actual: body});
 			}
 
-			callback(null, {url: url, responseTime: new Date() - started, statusCode: resp.statusCode});
+			var report = {url: url, responseTime: new Date() - started, statusCode: resp.statusCode};
+			console.log(report);
+
+			callback(null, report);
 		});
 	},
 
@@ -48,13 +60,19 @@ var beats = {
 			return callback({message: 'failed to connect db', connection: options.connection});
 		}
 
+		console.log('mongo query', connection);
+
 		options.query(db, function (err) {
 			if (err) {
 				return callback({message: 'db failed', connection: connection, err: err});
 			}
 
 			db.close();
-			callback(null, {connection: connection, responseTime: new Date() - started});
+
+			var report = {connection: connection, responseTime: new Date() - started};
+			console.log(report);
+
+			callback(null, report);
 		});
 	}
 };
@@ -81,7 +99,6 @@ function job(type, array, notifications) {
 	});
 
 	return function (callback) {
-		console.log('executing', type, 'beats..');
 		async.parallel(hearts, callback);
 	};
 }
@@ -99,8 +116,8 @@ function hearbeat(config) {
 		throw new Error('config.notify section is missing');
 	}
 
-	var notifications = Object.keys(config.monitor).map(function (k) {
-		return notification(config.notification[k]);
+	var notifications = Object.keys(config.notify).map(function (k) {
+		return notification(config.notify[k]);
 	});
 
 	var jobs = Object.keys(config.monitor).map(function (k) {
