@@ -1,13 +1,14 @@
 var async = require('async');
 var request = require('request');
 var mongo = require('mongojs');
+var logger = require('./utils/logger');
 
 var beats = {
 	// pings URL and measure the response time
 	ping: function (options, callback) {
 		var url = options.url, started = new Date();
 
-		console.log('ping', url);
+		logger.info('ping: ' + url);
 
 		request({url: options.url}, function (err, resp, body) {
 			if (err) {
@@ -19,7 +20,7 @@ var beats = {
 			}
 
 			var report = {url: url, responseTime: new Date() - started, statusCode: resp.statusCode};
-			console.log(report);
+			logger.success(report);
 
 			callback(null, report);
 		});
@@ -29,7 +30,7 @@ var beats = {
 	json: function (options, callback) {
 		var url = options.url, started = new Date(), expected = options.response;
 
-		console.log('json', url);
+		logger.info('json:' + url);
 
 		request({url: options.url, json: true}, function (err, resp, body) {
 			if (err) {
@@ -46,7 +47,7 @@ var beats = {
 			}
 
 			var report = {url: url, responseTime: new Date() - started, statusCode: resp.statusCode};
-			console.log(report);
+			logger.success(report);
 
 			callback(null, report);
 		});
@@ -60,7 +61,7 @@ var beats = {
 			return callback({message: 'failed to connect db', connection: options.connection});
 		}
 
-		console.log('mongo query', connection);
+		logger.info('mongo query:' + connection);
 
 		options.query(db, function (err) {
 			if (err) {
@@ -70,7 +71,7 @@ var beats = {
 			db.close();
 
 			var report = {connection: connection, responseTime: new Date() - started};
-			console.log(report);
+			logger.success(report);
 
 			callback(null, report);
 		});
@@ -132,7 +133,7 @@ function hearbeat(config) {
 			(function cycle() {
 				async.series(jobs, function (err) {
 					if (err) {
-						console.log(err);
+						logger.error(err);
 					}
 
 					setTimeout(cycle, config.interval);

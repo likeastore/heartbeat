@@ -4,12 +4,19 @@ module.exports = {
 
 	interval: 1000,
 
+	logentries: {
+		token: null
+	},
+
 	// configure monitoring options
 	monitor: {
 
 		ping: [
 			{
 				url: 'https://likeastore.com'
+			},
+			{
+				url: 'https://stage.likeastore.com'
 			}
 		]
 
