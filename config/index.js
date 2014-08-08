@@ -11,26 +11,26 @@ module.exports = {
 	// configure monitoring options
 	monitor: {
 
-		// ping: [
-		// 	{
-		// 		url: 'https://likeastore.com'
-		// 	},
-		// 	{
-		// 		url: 'https://stage.likeastore.com'
-		// 	}
-		// ],
+		ping: [
+			{
+				url: 'https://likeastore.com'
+			},
+			{
+				url: 'https://stage.likeastore.com'
+			}
+		],
 
-		// json: [
-		// 	{
-		// 		url: 'https://app.likeastore.com/api/monitor',
-		// 		response: {
-		// 			"app":"app.likeastore.com",
-		// 			"env":"production",
-		// 			"version":"0.0.52",
-		// 			"apiUrl":"/api"
-		// 		}
-		// 	}
-		// ],
+		json: [
+			{
+				url: 'https://app.likeastore.com/api/monitor',
+				response: {
+					"app":"app.likeastore.com",
+					"env":"production",
+					"version":"0.0.52",
+					"apiUrl":"/api"
+				}
+			}
+		],
 
 		mongo: [
 			{
