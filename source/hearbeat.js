@@ -16,12 +16,11 @@ var beats = {
 				return callback({message: 'ping failed', url: url, err: err});
 			}
 
-			if (resp.statusCode !== 200) {
-				return callback({message: 'ping failed', url: url, statusCode: resp.statusCode});
-			}
+			var report = resp.statusCode !== 200 ?
+				{success: false, url: url, statusCode: resp.statusCode} :
+				{success: true, url: url, responseTime: new Date() - started, statusCode: resp.statusCode};
 
-			var report = {url: url, responseTime: new Date() - started, statusCode: resp.statusCode};
-			logger.success(report);
+			report.success ? logger.success(report) : logger.error(report);
 
 			callback(null, report);
 		});
@@ -38,16 +37,15 @@ var beats = {
 				return callback({message: 'json failed', url: url, err: err});
 			}
 
-			if (resp.statusCode !== 200) {
-				return callback({message: 'json failed', url: url, statusCode: resp.statusCode});
-			}
+			var report = resp.statusCode !== 200 ?
+				{success: false, url: url, statusCode: resp.statusCode} :
+				{success: true, url: url, responseTime: new Date() - started, statusCode: resp.statusCode};
 
 			if (!_.isEqual(body, expected)) {
-				return callback({message: 'json failed', url: url, expected: expected, actual: body});
+				report = {success: false, url: url, expected: expected, actual: body};
 			}
 
-			var report = {url: url, responseTime: new Date() - started, statusCode: resp.statusCode};
-			logger.success(report);
+			report.success ? logger.success(report) : logger.error(report);
 
 			callback(null, report);
 		});
@@ -129,10 +127,12 @@ function hearbeat(config) {
 		start: function () {
 			// heartbeating cycle..
 			(function cycle() {
-				async.series(jobs, function (err) {
+				async.series(jobs, function (err, results) {
 					if (err) {
 						logger.error(err);
 					}
+
+					// TODO: filter error results and notify
 
 					setTimeout(cycle, config.interval);
 				});
