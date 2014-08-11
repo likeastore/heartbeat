@@ -1,5 +1,4 @@
 module.exports = {
-	// mongo db connection
 	connection: 'mongodb://localhost:27017/heartbeatdb',
 
 	interval: 1000,
