@@ -7,7 +7,6 @@ module.exports = {
 		token: null
 	},
 
-	// configure monitoring options
 	monitor: {
 
 		ping: [
@@ -51,6 +50,16 @@ module.exports = {
 
 		sms: {
 			to: ['+3805551211', '+3805551212']
+		}
+	},
+
+	transport: {
+		mandrill: {
+			token: null
+		},
+
+		twilio: {
+			token: null
 		}
 	}
 };

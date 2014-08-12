@@ -6,6 +6,8 @@ Health monitoring of HTTP services and databases.
 
 * [MongoDB](http://mongodb.org) > 2.4.x
 * [NodeJS](http://nodejs.org) > 0.10.x
+* [Mandrill account]()
+* [Twilio acccount]()
 
 ## How to use
 
@@ -60,18 +62,28 @@ module.exports = {
 				}
 			}
 		]
-},
-
-// notification options
-notify: {
-	email: {
-		to: 'devs@likeastore.com'
 	},
 
-	sms: {
-		to: ['+3805551211', '+3805551212']
+	// notification options
+	notify: {
+		email: {
+			to: 'devs@likeastore.com'
+		},
+
+		sms: {
+			to: ['+3805551211', '+3805551212']
+		}
+	},
+
+	transport: {
+		mandrill: {
+			token: null
+		},
+
+		twilio: {
+			token: null
+		}
 	}
-}
 };
 ```
 
@@ -93,7 +105,11 @@ The period of time between heartbeats,
 interval: 5000
 ````
 
-### Ping
+### Monitor
+
+Monitoring options.
+
+#### Ping
 
 Site ping, measure the request execution time and compare to `!== 200` response code.
 
@@ -108,7 +124,7 @@ ping: [
 ]
 ```
 
-### Json
+#### Json
 
 Suites for `json` API's with endpoints to check it's state.
 
@@ -126,7 +142,7 @@ json: [
 ],
 ```
 
-### Mongo
+#### Mongo
 
 For MongoDB checking, to run any query:
 
@@ -140,6 +156,30 @@ mongo: [
 		}
 	}
 ]
+```
+
+### Transport
+
+To be able to send and receive emails and sms, `mandrill` and `twilio` accounts have to be setup.
+
+#### Mandril token
+
+Mandrill access token,
+
+```js
+mandrill: {
+	token: "mandrill_access_token"
+},
+```
+
+#### Twilio token 
+
+Twilio access token,
+
+```js
+twilio: {
+	token: "twilio_access_token"
+}
 ```
 
 ### Planned
