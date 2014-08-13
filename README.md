@@ -6,8 +6,8 @@ Health monitoring of HTTP services and databases.
 
 * [MongoDB](http://mongodb.org) > 2.4.x
 * [NodeJS](http://nodejs.org) > 0.10.x
-* [Mandrill account]()
-* [Twilio acccount]()
+* [Mandrill]()
+* [Twilio]()
 
 ## How to use
 
