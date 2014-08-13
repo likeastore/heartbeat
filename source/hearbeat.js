@@ -89,16 +89,33 @@ function heart(type, options) {
 }
 
 function notification(options) {
+	var notifications = Object.keys(options).map(function (k) {
 
+	});
+
+
+	return function (failures, callback) {
+
+	};
 }
 
-function job(type, array, notifications) {
+function job(type, array, notify) {
 	var hearts = array.map(function (e) {
 		return heart(type, e);
 	});
 
 	return function (callback) {
-		async.parallel(hearts, callback);
+		async.parallel(hearts, function (err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			var failures = results.filter(function (r) {
+				return !r.success;
+			});
+
+			notify(failures, callback);
+		});
 	};
 }
 
@@ -115,12 +132,10 @@ function hearbeat(config) {
 		throw new Error('config.notify section is missing');
 	}
 
-	var notifications = Object.keys(config.notify).map(function (k) {
-		return notification(config.notify[k]);
-	});
+	var notify = notification(config.notify);
 
 	var jobs = Object.keys(config.monitor).map(function (k) {
-		return job(k, config.monitor[k], notifications);
+		return job(k, config.monitor[k], notify);
 	});
 
 	return {
@@ -131,8 +146,6 @@ function hearbeat(config) {
 					if (err) {
 						logger.error(err);
 					}
-
-					// TODO: filter error results and notify
 
 					setTimeout(cycle, config.interval);
 				});

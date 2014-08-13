@@ -4,10 +4,9 @@ Health monitoring of HTTP services and databases.
 
 ## Requirements
 
-* [MongoDB](http://mongodb.org) > 2.4.x
 * [NodeJS](http://nodejs.org) > 0.10.x
-* [Mandrill]()
-* [Twilio]()
+* [Mandrill](https://mandrillapp.com)
+* [Twilio](https://www.twilio.com/) **optional**
 
 ## How to use
 
@@ -21,8 +20,6 @@ Create `index.js` in [/config](/config) folder,
 
 ```js
 module.exports = {
-	connection: 'mongodb://localhost:27017/heartbeatdb',
-
 	interval: 5000,
 
 	logentries: {
