@@ -76,6 +76,16 @@ var beats = {
 	}
 };
 
+var notifiers = {
+	email: function (options, callback) {
+
+	},
+
+	sms: function (options, callback) {
+
+	}
+};
+
 function heart(type, options) {
 	var beat = beats[type];
 
@@ -88,14 +98,25 @@ function heart(type, options) {
 	};
 }
 
+function notify(type, options) {
+	var notif = notifiers[type];
+
+	if (!type) {
+		throw new Error('missing notifier type for: ' + type);
+	}
+
+	return function (callback) {
+		notif(options, callback);
+	};
+}
+
 function notification(options) {
 	var notifications = Object.keys(options).map(function (k) {
-
+		return notify(k, options[k]);
 	});
 
-
 	return function (failures, callback) {
-
+		async.parallel(notifications, callback);
 	};
 }
 
