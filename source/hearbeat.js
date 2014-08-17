@@ -3,6 +3,7 @@ var async = require('async');
 var request = require('request');
 var mongo = require('mongojs');
 var logger = require('./utils/logger');
+var transport = request('./transport');
 
 var beats = {
 	// pings URL and measure the response time
@@ -56,20 +57,19 @@ var beats = {
 		var connection = options.connection, started = new Date();
 		var db = mongo.connect(connection, options.collections);
 		if (!db) {
-			return callback({message: 'failed to connect db', connection: options.connection});
+			return callback(null, {success: false, url: connection, message: 'failed to connect database'});
 		}
 
 		logger.info('mongo query:' + connection);
 
 		options.query(db, function (err) {
-			if (err) {
-				return callback({message: 'db failed', connection: connection, err: err});
-			}
-
 			db.close();
 
-			var report = {connection: connection, responseTime: new Date() - started};
-			logger.success(report);
+			var report = err ?
+				{success: false, url: connection, responseTime: new Date() - started, err: err} :
+				{success: true, url: connection, responseTime: new Date() - started};
+
+			report.success ? logger.success(report) : logger.error(report);
 
 			callback(null, report);
 		});
@@ -77,11 +77,25 @@ var beats = {
 };
 
 var notifiers = {
-	email: function (options, callback) {
+	email: function (options, failure, callback) {
+		var text = JSON.stringify(failure);
+		var subject = '[Heartbeat] Service ' + failure.service + ' failed.';
+		var from = options.from;
+		var to = options.to.map(function (t) {
+			return {email: t};
+		});
 
+		transport.mandrill('/messages/send', {
+			message: {
+				text: text,
+				subject: subject,
+				from: from,
+				to: to
+			}
+		}, callback);
 	},
 
-	sms: function (options, callback) {
+	sms: function (options, failure, callback) {
 
 	}
 };
@@ -105,8 +119,10 @@ function notify(type, options) {
 		throw new Error('missing notifier type for: ' + type);
 	}
 
-	return function (callback) {
-		notif(options, callback);
+	return function (failures, callback) {
+		async.each(failures, function (failure, callback) {
+			notif(options, failure, callback);
+		}, callback);
 	};
 }
 
@@ -116,7 +132,9 @@ function notification(options) {
 	});
 
 	return function (failures, callback) {
-		async.parallel(notifications, callback);
+		async.each(notifications, function (notification, callback) {
+			notification(failures, callback);
+		}, callback);
 	};
 }
 

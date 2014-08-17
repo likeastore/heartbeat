@@ -1,12 +1,11 @@
 module.exports = {
-	interval: 1000,
+	interval: 10000,
 
 	logentries: {
 		token: null
 	},
 
 	monitor: {
-
 		ping: [
 			{
 				url: 'https://likeastore.com'
@@ -43,7 +42,8 @@ module.exports = {
 	// notification options
 	notify: {
 		email: {
-			to: 'devs@likeastore.com'
+			from: 'no-reply@likeastore.com',
+			to: 'alexander.beletsky@gmail.com'
 		},
 
 		sms: {
