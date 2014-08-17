@@ -8,7 +8,7 @@ module.exports = {
 	monitor: {
 		ping: [
 			{
-				url: 'https://likeastore.com'
+				url: 'https://likeastorea.com'
 			},
 			{
 				url: 'https://stage.likeastore.com'
@@ -43,7 +43,7 @@ module.exports = {
 	notify: {
 		email: {
 			from: 'no-reply@likeastore.com',
-			to: 'alexander.beletsky@gmail.com'
+			to: ['devs@likeastore.com']
 		},
 
 		sms: {
@@ -53,11 +53,12 @@ module.exports = {
 
 	transport: {
 		mandrill: {
-			token: null
+			token: 'fake-token'
 		},
 
 		twilio: {
-			token: null
+			sid: 'fake-sid',
+			token: 'fake-token'
 		}
 	}
 };

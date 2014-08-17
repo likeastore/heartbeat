@@ -14,21 +14,21 @@ var setupMandrill = function () {
 	}
 };
 
-var setupTwillio = function () {
+var setupTwilio = function () {
 	if (!validConfig()) {
 		throw new Error('missing twilio account SID or auth Token, please update config.transport.twilio section');
 	}
 
-	return twilio(config.transport.twilio.accountSid, config.transport.twilio.authToken);
+	return twilio(config.transport.twilio.sid, config.transport.twilio.token);
 
 	function validConfig() {
-		return config.transport.twilio && (config.transport.twilio.accountSid && config.transport.twilio.authToken);
+		return config.transport.twilio && (config.transport.twilio.sid && config.transport.twilio.token);
 	}
 };
 
 var transport = {
 	mandrill: setupMandrill(),
-	twillio: setupTwillio()
+	twilio: setupTwilio()
 };
 
 module.exports = transport;

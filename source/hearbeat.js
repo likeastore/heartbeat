@@ -3,7 +3,7 @@ var async = require('async');
 var request = require('request');
 var mongo = require('mongojs');
 var logger = require('./utils/logger');
-var transport = request('./transport');
+var transport = require('./transport');
 
 var beats = {
 	// pings URL and measure the response time
@@ -13,12 +13,8 @@ var beats = {
 		logger.info('ping: ' + url);
 
 		request({url: options.url}, function (err, resp, body) {
-			if (err) {
-				return callback({message: 'ping failed', url: url, err: err});
-			}
-
-			var report = resp.statusCode !== 200 ?
-				{success: false, url: url, statusCode: resp.statusCode} :
+			var report = (err || resp.statusCode !== 200) ?
+				{success: false, message: 'ping failed', url: url, statusCode: resp && resp.statusCode} :
 				{success: true, url: url, responseTime: new Date() - started, statusCode: resp.statusCode};
 
 			report.success ? logger.success(report) : logger.error(report);
@@ -34,12 +30,8 @@ var beats = {
 		logger.info('json:' + url);
 
 		request({url: options.url, json: true}, function (err, resp, body) {
-			if (err) {
-				return callback({message: 'json failed', url: url, err: err});
-			}
-
-			var report = resp.statusCode !== 200 ?
-				{success: false, url: url, statusCode: resp.statusCode} :
+			var report = (err || resp.statusCode !== 200) ?
+				{success: false, message: 'json failed', url: url, statusCode: resp && resp.statusCode} :
 				{success: true, url: url, responseTime: new Date() - started, statusCode: resp.statusCode};
 
 			if (!_.isEqual(body, expected)) {
@@ -66,7 +58,7 @@ var beats = {
 			db.close();
 
 			var report = err ?
-				{success: false, url: connection, responseTime: new Date() - started, err: err} :
+				{success: false, message: 'mongo failed', url: connection, responseTime: new Date() - started, err: err} :
 				{success: true, url: connection, responseTime: new Date() - started};
 
 			report.success ? logger.success(report) : logger.error(report);
@@ -79,24 +71,38 @@ var beats = {
 var notifiers = {
 	email: function (options, failure, callback) {
 		var text = JSON.stringify(failure);
-		var subject = '[Heartbeat] Service ' + failure.service + ' failed.';
+		var subject = '[Heartbeat] Service ' + failure.url + ' failed.';
 		var from = options.from;
 		var to = options.to.map(function (t) {
 			return {email: t};
 		});
 
+		var message = {
+			text: text,
+			subject: subject,
+			from_email: from,
+			to: to
+		};
+
+		logger.info('sending mandrill notification');
+
 		transport.mandrill('/messages/send', {
-			message: {
-				text: text,
-				subject: subject,
-				from: from,
-				to: to
-			}
+			message: message
 		}, callback);
 	},
 
 	sms: function (options, failure, callback) {
+		var text = JSON.stringify(failure);
+		var from = options.from;
+		var to = options.to;
 
+		var message = {
+			body: text,
+			from: from,
+			to: to
+		};
+
+		transport.twilio.sendMessage(message, callback);
 	}
 };
 
@@ -185,6 +191,8 @@ function hearbeat(config) {
 					if (err) {
 						logger.error(err);
 					}
+
+					logger.info('hearbeat interval over, restarting after ' + config.interval + ' msec.');
 
 					setTimeout(cycle, config.interval);
 				});
