@@ -4,6 +4,7 @@ var request = require('request');
 var mongo = require('mongojs');
 var logger = require('./utils/logger');
 var transport = require('./transport');
+var db = require('./db');
 
 var beats = {
 	// pings URL and measure the response time
@@ -16,8 +17,8 @@ var beats = {
 			var time = new Date() - started;
 
 			var report = (err || resp.statusCode !== 200) ?
-				{success: false, url: url, responseTime: time, statusCode: resp && resp.statusCode, message: 'ping failed', err: err} :
-				{success: true, url: url, responseTime: time, statusCode: resp.statusCode};
+				{success: false, url: url, responseTime: time, at: new Date(), statusCode: resp && resp.statusCode, message: 'ping failed', err: err} :
+				{success: true, url: url, responseTime: time, at: new Date(), statusCode: resp.statusCode};
 
 			report.success ? logger.success(report) : logger.error(report);
 
@@ -35,8 +36,8 @@ var beats = {
 			var time = new Date() - started;
 
 			var report = (err || resp.statusCode !== 200) ?
-				{success: false, url: url, responseTime: time, statusCode: resp && resp.statusCode, message: 'json failed', err: err} :
-				{success: true, url: url, responseTime: time, statusCode: resp.statusCode};
+				{success: false, url: url, responseTime: time, at: new Date(), statusCode: resp && resp.statusCode, message: 'json failed', err: err} :
+				{success: true, url: url, responseTime: time, at: new Date(), statusCode: resp.statusCode};
 
 			if (!_.isEqual(body, expected)) {
 				report = {success: false, url: url, expected: expected, actual: body};
@@ -64,8 +65,8 @@ var beats = {
 			db.close();
 
 			var report = err ?
-				{success: false, url: connection, responseTime: time, message: 'mongo failed', err: err} :
-				{success: true, url: connection, responseTime: time};
+				{success: false, url: connection, at: new Date(), responseTime: time, message: 'mongo failed', err: err} :
+				{success: true, url: connection, at: new Date(), responseTime: time};
 
 			report.success ? logger.success(report) : logger.error(report);
 
@@ -150,7 +151,7 @@ function notification(options) {
 	};
 }
 
-function job(type, array, notify) {
+function job(type, array, notify, db) {
 	var hearts = array.map(function (e) {
 		return heart(type, e);
 	});
@@ -161,11 +162,19 @@ function job(type, array, notify) {
 				return callback(err);
 			}
 
-			var failures = results.filter(function (r) {
-				return !r.success;
+			// save job results and notify failures..
+			db.heartbeats.insert(results, function (err) {
+				if (err) {
+					return callback(err);
+				}
+
+				var failures = results.filter(function (r) {
+					return !r.success;
+				});
+
+				notify(failures, callback);
 			});
 
-			notify(failures, callback);
 		});
 	};
 }
@@ -183,17 +192,17 @@ function hearbeat(config) {
 		throw new Error('config.notify section is missing');
 	}
 
+	var local = db(config);
 	var notify = notification(config.notify);
-
 	var jobs = Object.keys(config.monitor).map(function (k) {
-		return job(k, config.monitor[k], notify);
+		return job(k, config.monitor[k], notify, local);
 	});
 
 	return {
 		start: function () {
 			// heartbeating cycle..
 			(function cycle() {
-				async.series(jobs, function (err, results) {
+				async.series(jobs, function (err) {
 					if (err) {
 						logger.error(err);
 					}

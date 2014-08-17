@@ -1,4 +1,6 @@
 module.exports = {
+	connection: 'mongodb://localhost:27017/heartbeatdb',
+
 	interval: 10000,
 
 	logentries: {
@@ -8,7 +10,7 @@ module.exports = {
 	monitor: {
 		ping: [
 			{
-				url: 'https://likeastorea.com'
+				url: 'https://likeastore.com'
 			},
 			{
 				url: 'https://stage.likeastore.com'
