@@ -13,10 +13,12 @@ You decide what to use for notifications, `Mandrill` (emails), `Twilio` (sms) or
 
 ## How to use
 
-Clone the repo,
+Clone the repo and install dependenices,
 
 ```bash
 $ git clone git://github.com/likeastore/heartbeat
+$ cd heartbeat
+$ npm install
 ```
 
 Create `index.js` in [/config](/config) folder,
