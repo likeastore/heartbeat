@@ -20,18 +20,16 @@ Create `index.js` in [/config](/config) folder,
 
 ```js
 module.exports = {
-	interval: 5000,
+	interval: 10000,
 
 	logentries: {
 		token: null
 	},
 
-	// configure monitoring options
 	monitor: {
-
 		ping: [
 			{
-				url: 'https://likeastore.com'
+				url: 'https://likeastorea.com'
 			},
 			{
 				url: 'https://stage.likeastore.com'
@@ -59,12 +57,14 @@ module.exports = {
 				}
 			}
 		]
+
 	},
 
 	// notification options
 	notify: {
 		email: {
-			to: 'devs@likeastore.com'
+			from: 'no-reply@likeastore.com',
+			to: ['devs@likeastore.com']
 		},
 
 		sms: {
@@ -74,11 +74,12 @@ module.exports = {
 
 	transport: {
 		mandrill: {
-			token: null
+			token: 'fake-token'
 		},
 
 		twilio: {
-			token: null
+			sid: 'fake-sid',
+			token: 'fake-token'
 		}
 	}
 };

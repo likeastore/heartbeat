@@ -192,9 +192,10 @@ function hearbeat(config) {
 						logger.error(err);
 					}
 
-					logger.info('hearbeat interval over, restarting after ' + config.interval + ' msec.');
+					var interval = config.interval || 10000;
+					logger.info('hearbeat interval over, restarting after ' + interval + ' msec.');
 
-					setTimeout(cycle, config.interval);
+					setTimeout(cycle, interval);
 				});
 			})();
 		}
