@@ -6,8 +6,10 @@ Health monitoring of HTTP services and databases.
 
 * [MongoDB](http://mongodb.org)
 * [NodeJS](http://nodejs.org) > 0.10.x
-* [Mandrill](https://mandrillapp.com) **optional**
-* [Twilio](https://www.twilio.com/) **optional**
+* [Mandrill](https://mandrillapp.com)
+* [Twilio](https://www.twilio.com/) 
+
+You decide what to use for notifications, `Mandrill` (emails), `Twilio` (sms) or both. 
 
 ## How to use
 
@@ -21,6 +23,8 @@ Create `index.js` in [/config](/config) folder,
 
 ```js
 module.exports = {
+	connection: 'mongodb://localhost:27017/heartbeatdb',
+
 	interval: 10000,
 
 	logentries: {
@@ -64,7 +68,7 @@ module.exports = {
 	// notification options
 	notify: {
 		email: {
-			from: 'no-reply@likeastore.com',
+			from: 'heartbeat@likeastore.com',
 			to: ['devs@likeastore.com']
 		},
 
@@ -93,6 +97,14 @@ $ node app.js
 ```
 
 ## API
+
+### Connection
+
+Connection string to `MongoDB` to store heartbeat results.
+
+```js
+connection: 'mongodb://localhost:27017/heartbeatdb',
+```
 
 ### Interval
 
@@ -155,6 +167,11 @@ mongo: [
 ]
 ```
 
+#### Planned
+
+* [MySQL]()
+* [Redis]()
+
 ### Transport
 
 To be able to send and receive emails and sms, `mandrill` and `twilio` accounts have to be setup.
@@ -179,11 +196,6 @@ twilio: {
 	token: "twilio_access_token"
 }
 ```
-
-### Planned
-
-* [MySQL]()
-* [Redis]()
 
 ## License (MIT)
 

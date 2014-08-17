@@ -44,7 +44,7 @@ module.exports = {
 	// notification options
 	notify: {
 		email: {
-			from: 'no-reply@likeastore.com',
+			from: 'heartbeat@likeastore.com',
 			to: ['devs@likeastore.com']
 		},
 
