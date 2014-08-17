@@ -4,8 +4,9 @@ Health monitoring of HTTP services and databases.
 
 ## Requirements
 
+* [MongoDB](http://mongodb.org)
 * [NodeJS](http://nodejs.org) > 0.10.x
-* [Mandrill](https://mandrillapp.com)
+* [Mandrill](https://mandrillapp.com) **optional**
 * [Twilio](https://www.twilio.com/) **optional**
 
 ## How to use
@@ -93,8 +94,6 @@ $ node app.js
 
 ## API
 
-There are few strategies of heartbeating implemented now.
-
 ### Interval
 
 The period of time between heartbeats,
@@ -105,7 +104,7 @@ interval: 5000
 
 ### Monitor
 
-Monitoring options.
+Monitoring options. There are few strategies of heartbeating implemented now.
 
 #### Ping
 
@@ -176,6 +175,7 @@ Twilio access token,
 
 ```js
 twilio: {
+	sid: "twilio_sid",
 	token: "twilio_access_token"
 }
 ```

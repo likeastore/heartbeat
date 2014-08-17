@@ -13,9 +13,11 @@ var beats = {
 		logger.info('ping: ' + url);
 
 		request({url: options.url}, function (err, resp, body) {
+			var time = new Date() - started;
+
 			var report = (err || resp.statusCode !== 200) ?
-				{success: false, message: 'ping failed', url: url, statusCode: resp && resp.statusCode} :
-				{success: true, url: url, responseTime: new Date() - started, statusCode: resp.statusCode};
+				{success: false, url: url, responseTime: time, statusCode: resp && resp.statusCode, message: 'ping failed', err: err} :
+				{success: true, url: url, responseTime: time, statusCode: resp.statusCode};
 
 			report.success ? logger.success(report) : logger.error(report);
 
@@ -30,9 +32,11 @@ var beats = {
 		logger.info('json:' + url);
 
 		request({url: options.url, json: true}, function (err, resp, body) {
+			var time = new Date() - started;
+
 			var report = (err || resp.statusCode !== 200) ?
-				{success: false, message: 'json failed', url: url, statusCode: resp && resp.statusCode} :
-				{success: true, url: url, responseTime: new Date() - started, statusCode: resp.statusCode};
+				{success: false, url: url, responseTime: time, statusCode: resp && resp.statusCode, message: 'json failed', err: err} :
+				{success: true, url: url, responseTime: time, statusCode: resp.statusCode};
 
 			if (!_.isEqual(body, expected)) {
 				report = {success: false, url: url, expected: expected, actual: body};
@@ -55,11 +59,13 @@ var beats = {
 		logger.info('mongo query:' + connection);
 
 		options.query(db, function (err) {
+			var time = new Date() - started;
+
 			db.close();
 
 			var report = err ?
-				{success: false, message: 'mongo failed', url: connection, responseTime: new Date() - started, err: err} :
-				{success: true, url: connection, responseTime: new Date() - started};
+				{success: false, url: connection, responseTime: time, message: 'mongo failed', err: err} :
+				{success: true, url: connection, responseTime: time};
 
 			report.success ? logger.success(report) : logger.error(report);
 
