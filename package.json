@@ -1,0 +1,46 @@
+{
+  "name": "heartbeat",
+  "version": "0.0.1",
+  "description": "Health monitoring of HTTP services and databases.",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "async": "^0.9.0",
+    "colors": "^0.6.2",
+    "moment": "^2.8.1",
+    "mongojs": "^0.13.1",
+    "node-logentries": "^0.1.4",
+    "node-mandrill": "^1.0.1",
+    "request": "^2.40.0",
+    "twilio": "^1.6.0",
+    "underscore": "^1.6.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/likeastore/heartbeat.git"
+  },
+  "keywords": [
+    "health",
+    "monitor",
+    "monitoring",
+    "http",
+    "databases",
+    "mongodb",
+    "mysql",
+    "mandrill",
+    "twilio",
+    "notifications"
+  ],
+  "author": "alexander.beletsky@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/likeastore/heartbeat/issues"
+  },
+  "homepage": "https://github.com/likeastore/heartbeat"
+}
