@@ -1,19 +1,23 @@
+var dns = require('dns');
+
 var _ = require('underscore');
 var async = require('async');
 var request = require('request');
 var mongo = require('mongojs');
+var ping = require('tcp-ping');
+
 var logger = require('./utils/logger');
 var transport = require('./transport');
 var db = require('./db');
 
 var beats = {
 	// pings URL and measure the response time
-	ping: function (options, callback) {
+	http: function (options, callback) {
 		var url = options.url, started = new Date();
 
-		logger.info('ping: ' + url);
+		logger.info('http: ' + url);
 
-		request({url: options.url}, function (err, resp, body) {
+		request({url: url}, function (err, resp, body) {
 			var time = new Date() - started;
 
 			var report = (err || resp.statusCode !== 200) ?
@@ -72,6 +76,35 @@ var beats = {
 
 			callback(null, report);
 		});
+	},
+
+	// resolves all ip's by given DNS and pings each
+	resolve: function (options, callback) {
+		var name = options.name;
+
+		logger.info('resolve: ' + name);
+
+		dns.resolve4(name, function (err, addresses) {
+			if (err) {
+				return callback(null, {success: false, url: name, message: 'failed resolved ip by name'});
+			}
+
+			async.map(addresses, function (address, callback) {
+				var started = new Date();
+
+				ping.probe(address, 80, function (err, resolved) {
+					var time = new Date() - started;
+
+					var report = (err || !resolved) ?
+						{success: false, url: address, responseTime: time, at: new Date(), message: 'ping failed', err: err} :
+						{success: true, url: address, responseTime: time, at: new Date()};
+
+					report.success ? logger.success(report) : logger.error(report);
+
+					callback(null, report);
+				});
+			}, callback);
+		});
 	}
 };
 
@@ -121,7 +154,8 @@ function heart(type, options) {
 	}
 
 	return function (callback) {
-		beat(options, callback);
+		//beat(options, callback);
+		beat.call(beats, options, callback);
 	};
 }
 

@@ -8,7 +8,7 @@ module.exports = {
 	},
 
 	monitor: {
-		ping: [
+		http: [
 			{
 				url: 'https://likeastore.com'
 			},
@@ -36,6 +36,12 @@ module.exports = {
 				query: function (db, callback) {
 					db.users.findOne({email: 'alexander.beletsky@gmail.com'}, callback);
 				}
+			}
+		],
+
+		resolve: [
+			{
+				name: 'google.com'
 			}
 		]
 

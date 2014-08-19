@@ -34,7 +34,7 @@ module.exports = {
 	},
 
 	monitor: {
-		ping: [
+		http: [
 			{
 				url: 'https://likeastorea.com'
 			},
@@ -62,6 +62,12 @@ module.exports = {
 				query: function (db, callback) {
 					db.users.findOne({email: 'alexander.beletsky@gmail.com'}, callback);
 				}
+			}
+		],
+
+		resolve: [
+			{
+				name: 'google.com'
 			}
 		]
 
@@ -120,9 +126,9 @@ interval: 5000
 
 Monitoring options. There are few strategies of heartbeating implemented now.
 
-#### Ping
+#### Http
 
-Site ping, measure the request execution time and compare to `!== 200` response code.
+HTTP/HTTPS requests, measure the request execution time and compare to `!== 200` response code.
 
 ```js
 ping: [
@@ -137,7 +143,7 @@ ping: [
 
 #### Json
 
-Suites for `json` API's with endpoints to check it's state.
+HTTP/HTTPS requests for JSON API's.
 
 ```js
 json: [
@@ -165,6 +171,18 @@ mongo: [
 		query: function (db, callback) {
 			db.users.findOne({email: 'alexander.beletsky@gmail.com'}, callback);
 		}
+	}
+]
+```
+
+#### Resolve
+
+Resolves given `dns` name into ip addresses and pings each address.
+
+```js
+resolve: [
+	{
+		name: 'google.com'
 	}
 ]
 ```
