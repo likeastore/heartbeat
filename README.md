@@ -69,8 +69,13 @@ module.exports = {
 			{
 				name: 'google.com'
 			}
-		]
+		],
 
+		ping: [
+			{
+				ip: '37.139.9.95'
+			}
+		]
 	},
 
 	// notification options
@@ -183,6 +188,18 @@ Resolves given `dns` name into ip addresses and pings each address.
 resolve: [
 	{
 		name: 'google.com'
+	}
+]
+```
+
+#### Ping 
+
+Pings given `ip` address.
+
+```js
+ping: [
+	{
+		ip: '37.139.9.95'
 	}
 ]
 ```
