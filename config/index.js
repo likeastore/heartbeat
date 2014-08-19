@@ -43,8 +43,13 @@ module.exports = {
 			{
 				name: 'google.com'
 			}
-		]
+		],
 
+		ping: [
+			{
+				ip: '37.139.9.95'
+			}
+		]
 	},
 
 	// notification options
