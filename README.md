@@ -208,6 +208,7 @@ ping: [
 
 * [MySQL]()
 * [Redis]()
+* [REST hooks]()
 
 ### Transport
 
