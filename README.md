@@ -131,7 +131,7 @@ interval: 5000
 
 Monitoring options. There are few strategies of heartbeating implemented now.
 
-#### Http
+#### HTTP
 
 HTTP/HTTPS requests, measure the request execution time and compare to `!== 200` response code.
 
@@ -146,7 +146,7 @@ ping: [
 ]
 ```
 
-#### Json
+#### JSON
 
 HTTP/HTTPS requests for JSON API's.
 
@@ -164,7 +164,7 @@ json: [
 ],
 ```
 
-#### Mongo
+#### MongoDB
 
 For MongoDB checking, to run any query:
 
