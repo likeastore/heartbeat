@@ -136,7 +136,7 @@ Monitoring options. There are few strategies of heartbeating implemented now.
 HTTP/HTTPS requests, measure the request execution time and compare to `!== 200` response code.
 
 ```js
-ping: [
+http: [
 	{
 		url: 'https://likeastore.com'
 	},
