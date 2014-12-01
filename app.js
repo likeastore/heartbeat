@@ -1,4 +1,4 @@
 var config = require('./config');
-var hearbeat = require('./source/hearbeat');
+var heartbeat = require('./source/heartbeat');
 
-hearbeat(config).start();
+heartbeat(config).start();

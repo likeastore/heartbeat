@@ -234,7 +234,7 @@ function job(type, array, notify, db) {
 	};
 }
 
-function hearbeat(config) {
+function heartbeat(config) {
 	if (!config) {
 		throw new Error('config is missing');
 	}
@@ -263,7 +263,7 @@ function hearbeat(config) {
 					}
 
 					var interval = config.interval || 10000;
-					logger.info('hearbeat interval over, restarting after ' + interval + ' msec.');
+					logger.info('heartbeat interval over, restarting after ' + interval + ' msec.');
 
 					setTimeout(cycle, interval);
 				});
@@ -272,4 +272,4 @@ function hearbeat(config) {
 	};
 }
 
-module.exports = hearbeat;
+module.exports = heartbeat;
