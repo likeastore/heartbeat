@@ -18,9 +18,11 @@
     "twilio": "^1.6.0",
     "underscore": "^1.6.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "^2.0.1"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -R dot"
   },
   "repository": {
     "type": "git",
