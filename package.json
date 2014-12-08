@@ -20,6 +20,7 @@
     "underscore": "^1.6.0"
   },
   "devDependencies": {
+    "ghooks": "^0.2.2",
     "mocha": "^2.0.1"
   },
   "scripts": {
@@ -46,5 +47,10 @@
   "bugs": {
     "url": "https://github.com/likeastore/heartbeat/issues"
   },
-  "homepage": "https://github.com/likeastore/heartbeat"
+  "homepage": "https://github.com/likeastore/heartbeat",
+  "config": {
+    "ghooks": {
+      "pre-commit": "npm test"
+    }
+  }
 }
